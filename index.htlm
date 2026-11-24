@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Johana Rauld · Agenda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Gelasio:wght@500;600&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,800&display=swap" rel="stylesheet">
+<style>
+/* VOICE: calma, cercana, de consulta pequeña
+   IDEA: la tarjeta de Johana convertida en una agenda que se llena
+   PICTURE: el logo de loto Qi Hai grande + la agenda funcionando
+   COLOUR and TYPE: papel cálido, verde hoja del logo, tinta verde profunda; Gelasio + Nunito Sans
+   LAYOUT: banda de marca, agenda en una columna, terapias, pie; panel privado aparte */
+:root{color-scheme:light dark;--bg:light-dark(#fbfaf5,#0f1712);--card:light-dark(#ffffff,#16211a);--ink:light-dark(#1c2a21,#e6eee5);--mute:light-dark(#5d6b61,#9fb0a3);--leaf:#8fbf4d;--deep:light-dark(#2e5a39,#a9d27a);--band:light-dark(#eef3e4,#1a2a1f);--line:light-dark(#dfe5d6,#2a3a2e);--acc:light-dark(#b5442c,#ef8a6f)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Nunito Sans",system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3{font-family:Gelasio,Georgia,serif;font-weight:600;line-height:1.1;margin:0;text-wrap:balance}
+.band{padding:clamp(28px,4vw,64px) max(5vw,16px)}
+.wrap{max-width:1040px;margin:0 auto}
+header.top{display:flex;align-items:center;gap:12px;padding:12px max(5vw,16px);border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:0;z-index:5}
+header.top .nm{font-family:Gelasio,serif;font-size:19px;flex:1;white-space:nowrap}
+header.top svg{width:40px;height:40px}
+.btn{font:inherit;font-weight:800;min-height:44px;padding:10px 18px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn.pri{background:var(--deep);color:var(--bg);border-color:var(--deep)}
+.btn.sm{min-height:36px;padding:6px 12px;font-size:14px}
+.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.opt:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.hero{background:var(--band)}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:center}
+.hero svg{width:100%;max-width:220px;height:auto}
+.hero h1{font-size:clamp(34px,6vw,52px)}
+.hero p{color:var(--mute);margin:10px 0 0;max-width:56ch;font-size:17px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.chips span{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:14px}
+.book{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:clamp(18px,3vw,32px);box-shadow:0 18px 40px -28px rgba(30,60,30,.5);margin-top:calc(-1 * clamp(16px,3vw,36px))}
+.step{padding:18px 0;border-bottom:1px solid var(--line)}.step:last-child{border:0;padding-bottom:0}.step:first-child{padding-top:0}
+.step h2{font-size:22px;margin-bottom:12px;display:flex;gap:10px;align-items:baseline}
+.step h2 b{font-family:"Nunito Sans";font-size:14px;color:var(--bg);background:var(--deep);border-radius:50%;width:26px;height:26px;display:inline-grid;place-items:center;flex:none}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
+.opt{font:inherit;color:var(--ink);text-align:left;background:var(--bg);border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer;min-height:44px}
+.opt small{display:block;color:var(--mute);font-size:13px}
+.opt.on{border-color:var(--deep);background:var(--band);box-shadow:inset 0 0 0 1px var(--deep)}
+.opt[disabled]{opacity:.35;cursor:not-allowed;text-decoration:line-through}
+.days{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px}
+.days .opt{flex:none;width:74px;text-align:center;scroll-snap-align:start;padding:10px 4px}
+.days .opt b{display:block;font-size:22px;font-family:Gelasio,serif}
+.hours{grid-template-columns:repeat(auto-fill,minmax(88px,1fr))}.hours .opt{text-align:center;font-weight:800;white-space:nowrap}
+label{display:block;font-weight:600;font-size:14px;margin:10px 0 4px}
+input,select,textarea{font:inherit;font-size:16px;width:100%;min-height:44px;padding:10px 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink)}
+textarea{min-height:80px;resize:vertical}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 14px}
+.sum{background:var(--band);border-radius:14px;padding:14px 16px;margin:14px 0}
+.note{color:var(--mute);font-size:14px}
+.empty{color:var(--mute);padding:12px 0}
+.ok{border:1.5px solid var(--deep);border-radius:16px;padding:18px;background:var(--band)}
+.svc{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-top:20px}
+.svc article{border-top:2px solid var(--leaf);padding-top:12px}
+.svc h3{font-size:22px}.svc .meta{color:var(--deep);font-weight:800;font-size:14px;margin:4px 0;white-space:nowrap}
+footer{background:var(--deep);color:var(--bg)}
+footer a{color:inherit}
+.panel{display:none}
+body.adm .panel{display:block}body.adm .pub{display:none}
+.tabs{display:flex;gap:8px;overflow-x:auto;margin:16px 0}
+.tabs .opt{flex:none;font-weight:800}
+.row{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.row .t{font-weight:800;font-size:20px;width:64px;white-space:nowrap}
+.row .who{flex:1 1 180px}.row .who small{display:block;color:var(--mute)}
+.tag{font-size:12px;font-weight:800;padding:2px 10px;border-radius:999px;background:var(--band);color:var(--deep);white-space:nowrap}
+.tag.p{color:var(--acc)}
+.dayh{margin-top:18px;font-size:18px;color:var(--deep)}
+.wk{display:flex;flex-wrap:wrap;gap:8px}.wk .opt{width:auto;min-width:56px;text-align:center}
+.srow{display:grid;grid-template-columns:minmax(0,2fr) 80px minmax(0,1fr) 44px;gap:8px;align-items:center;margin-bottom:8px}
+.srow textarea{grid-column:1/-1;min-height:56px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:700;opacity:0;transition:opacity .25s;pointer-events:none;z-index:9}
+.toast.on{opacity:1}
+@media(max-width:600px){#chips{display:none}.hero .wrap{grid-template-columns:96px minmax(0,1fr);align-items:start}.hero h1{font-size:32px}.two{grid-template-columns:1fr}.srow{grid-template-columns:minmax(0,1fr) 70px 44px}.srow .pr{grid-column:1/3}}
+@media(prefers-reduced-motion:reduce){.toast{transition:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <defs>
+  <path id="arcT" d="M26,100 A74,74 0 0,1 174,100"/>
+  <path id="arcB" d="M14,100 A86,86 0 0,0 186,100"/>
+  <g id="lotus">
+   <path d="M100 136 C70 136 52 118 46 100 C66 104 82 116 100 136 C118 116 134 104 154 100 C148 118 130 136 100 136Z" fill="none" stroke="#c9dfa8" stroke-width="2"/>
+   <path d="M100 132 C78 128 62 114 58 94 C76 98 92 112 100 132Z" fill="#a6cc6a"/>
+   <path d="M100 132 C122 128 138 114 142 94 C124 98 108 112 100 132Z" fill="#a6cc6a"/>
+   <path d="M100 132 C84 118 80 100 86 80 C98 94 104 112 100 132Z" fill="#8fbf4d"/>
+   <path d="M100 132 C116 118 120 100 114 80 C102 94 96 112 100 132Z" fill="#8fbf4d"/>
+   <path d="M100 132 C90 116 90 96 100 78 C110 96 110 116 100 132Z" fill="#7cb03c"/>
+   <path d="M100 134 C88 140 72 146 60 144 C70 136 86 132 100 134Z" fill="#a6cc6a"/>
+   <path d="M100 134 C112 140 128 146 140 144 C130 136 114 132 100 134Z" fill="#a6cc6a"/>
+   <circle cx="100" cy="70" r="3.4" fill="#8fbf4d"/><circle cx="100" cy="61" r="2.6" fill="#a6cc6a"/><circle cx="100" cy="54" r="1.9" fill="#c9dfa8"/>
+  </g>
+ </defs>
+</svg>
+
+<header class="top">
+ <svg viewBox="0 0 200 200" aria-hidden="true"><use href="#lotus"/></svg>
+ <div class="nm">Johana Rauld</div>
+ <button class="btn sm" id="bPanel" hidden>Mi panel</button>
+ <button class="btn sm" id="bPub" hidden>Ver página</button>
+</header>
+
+<main class="pub">
+ <section class="band hero">
+  <div class="wrap">
+   <svg viewBox="0 0 200 200" role="img" aria-label="Logo Qi Hai Medicina China">
+    <circle cx="100" cy="100" r="96" fill="var(--card)"/>
+    <circle cx="100" cy="100" r="66" fill="none" stroke="#dfe8cf" stroke-width="1"/>
+    <text font-size="12.5" letter-spacing="2.4" fill="var(--mute)" font-family="Gelasio,serif"><textPath href="#arcT" startOffset="50%" text-anchor="middle">QI HAI MEDICINA CHINA</textPath></text>
+    <text font-size="10.5" letter-spacing="1.8" fill="var(--mute)" font-family="Gelasio,serif"><textPath href="#arcB" startOffset="50%" text-anchor="middle">ACUPUNTURA Y OTRAS TÉCNICAS</textPath></text>
+    <use href="#lotus"/>
+   </svg>
+   <div>
+    <h1>Johana Rauld</h1>
+    <p>Terapeuta en Medicina China. Elige tu terapia, el día y la hora, y envía tu reserva en un minuto.</p>
+    <div class="chips" id="chips"></div>
+   </div>
+  </div>
+ </section>
+
+ <section class="band" style="padding-top:0">
+  <div class="wrap book" id="book">
+   <div class="step"><h2><b>1</b>¿Qué terapia buscas?</h2><div class="grid" id="sSvc"></div></div>
+   <div class="step"><h2><b>2</b>Elige el día</h2><div class="days" id="sDay"></div></div>
+   <div class="step"><h2><b>3</b>Elige la hora</h2><div class="grid hours" id="sHour"></div></div>
+   <div class="step"><h2><b>4</b>Tus datos</h2>
+    <div class="two">
+     <div><label for="fN">Nombre y apellido</label><input id="fN" autocomplete="name"></div>
+     <div><label for="fT">Teléfono (WhatsApp)</label><input id="fT" type="tel" inputmode="tel" placeholder="+56 9 1234 5678" autocomplete="tel"></div>
+    </div>
+    <label for="fC">Comentario (opcional)</label><textarea id="fC" placeholder="Motivo de consulta, si es primera vez, etc."></textarea>
+    <div class="sum" id="sum"></div>
+    <a class="btn pri" id="bSend" href="#" aria-disabled="true">Enviar reserva por WhatsApp</a>
+    <p class="note">Johana confirma tu hora por WhatsApp. La hora queda reservada cuando ella la confirma.</p>
+   </div>
+   <div id="done"></div>
+  </div>
+ </section>
+
+ <section class="band" id="terapias" style="background:var(--band)">
+  <div class="wrap"><h2 style="font-size:clamp(28px,4vw,40px)">Terapias</h2><div class="svc" id="svcList"></div></div>
+ </section>
+</main>
+
+<main class="panel band">
+ <div class="wrap">
+  <h1 style="font-size:clamp(30px,5vw,44px)">Panel de Johana</h1>
+  <p class="note" id="modeNote"></p>
+  <div class="tabs" id="tabs"></div>
+  <div id="pv"></div>
+ </div>
+</main>
+
+<footer class="band">
+ <div class="wrap">
+  <h2 style="font-size:26px">Qi Hai · Medicina China</h2>
+  <p>Acupuntura y otras técnicas · Johana Rauld<br>WhatsApp: <a href="https://wa.me/56974994417">+56 9 7499 4417</a></p>
+ </div>
+</footer>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+{
+const WA='56974994417';
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const DN=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'],MN=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const DEF={dias:[1,2,3,4,5,6],inicio:'10:00',fin:'19:00',intervalo:60,bloqueos:[],servicios:[
+ {id:'tuina',n:'Tuina (masaje)',m:60,p:'',d:'Masaje terapéutico de la medicina china, con presión y movilización sobre meridianos y puntos.'},
+ {id:'vent',n:'Ventosas chinas',m:45,p:'',d:'Copas aplicadas sobre la piel que generan succión; fijas o deslizantes.'},
+ {id:'acu',n:'Acupuntura',m:60,p:'',d:'Agujas finas y estériles en puntos específicos según la evaluación de cada persona.'},
+ {id:'eacu',n:'Electroacupuntura',m:60,p:'',d:'Acupuntura con una corriente eléctrica suave aplicada a las agujas.'},
+ {id:'moxa',n:'Moxibustión',m:45,p:'',d:'Calor de artemisa (moxa) aplicado sobre puntos o zonas del cuerpo.'}]};
+let cfg=structuredClone(DEF),citas={},ocup={},sols={};
+let db=null,usr=null,uid=null,admin=false,mode='local',tab='agenda';
+const sel={svc:null,day:null,hour:null};
+const toast=t=>{const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),2200)};
+const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const pd=s=>{const[a,b,c]=s.split('-').map(Number);return new Date(a,b-1,c)};
+const nice=s=>{const d=pd(s);return DN[d.getDay()]+' '+d.getDate()+' '+MN[d.getMonth()]};
+const mins=h=>{const[a,b]=h.split(':').map(Number);return a*60+b};
+const hhmm=m=>String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
+const svcName=id=>(cfg.servicios.find(s=>s.id===id)||{n:id}).n;
+const phone=t=>{let d=String(t||'').replace(/\D/g,'');if(d.length===9&&d[0]==='9')d='56'+d;return d};
+const price=s=>s.p?('$'+Number(String(s.p).replace(/\D/g,'')||0).toLocaleString('es-CL')):'Valor a confirmar';
+
+/* ---- almacenamiento local (vista previa / sin sesión) ---- */
+const LK='qihai-demo';
+const loadLocal=()=>{try{const o=JSON.parse(localStorage.getItem(LK)||'{}');if(o.cfg)cfg=o.cfg;citas=o.citas||{};ocup=o.ocup||{};sols=o.sols||{}}catch(e){}};
+const saveLocal=()=>{try{localStorage.setItem(LK,JSON.stringify({cfg,citas,ocup,sols}))}catch(e){}};
+
+/* ---- acciones (db o local) ---- */
+async function wr(path,data){if(mode==='db'){await db.doc(path).set(data)}else{const[c,i]=path.split('/');({config:()=>cfg=data,citas:()=>citas[i]=data,ocupados:()=>ocup[i]=data,solicitudes:()=>sols[i]=data})[c]();saveLocal();renderAll()}}
+async function rm(path){if(mode==='db'){await db.doc(path).delete()}else{const[c,i]=path.split('/');delete({citas,ocupados:ocup,solicitudes:sols})[c][i];saveLocal();renderAll()}}
+async function addCita(c){const k=c.f+'_'+c.h;if(citas[k]){toast('Esa hora ya está tomada');return false}await wr('citas/'+k,c);await wr('ocupados/'+k,{f:c.f,h:c.h});return true}
+async function delCita(k){await rm('citas/'+k);await rm('ocupados/'+k)}
+
+/* ---- disponibilidad ---- */
+function slots(f){const d=pd(f);if(!cfg.dias.includes(d.getDay())||cfg.bloqueos.includes(f))return[];const out=[];const now=new Date();const step=Math.max(15,+cfg.intervalo||60);for(let m=mins(cfg.inicio);m+step<=mins(cfg.fin);m+=step){const h=hhmm(m);if(f===iso(now)&&m<=now.getHours()*60+now.getMinutes()+30)continue;out.push(h)}return out}
+const busy=(f,h)=>!!ocup[f+'_'+h];
+
+/* ---- página pública ---- */
+function renderPub(){
+ $('chips').innerHTML=cfg.servicios.map(s=>'<span>'+esc(s.n)+'</span>').join('');
+ $('sSvc').innerHTML=cfg.servicios.map(s=>`<button class="opt${sel.svc===s.id?' on':''}" data-svc="${esc(s.id)}">${esc(s.n)}<small>${esc(s.m)} min · ${esc(price(s))}</small></button>`).join('');
+ const days=[];for(let i=0;i<21;i++){const d=new Date();d.setDate(d.getDate()+i);const f=iso(d);const free=slots(f).filter(h=>!busy(f,h)).length;days.push(`<button class="opt${sel.day===f?' on':''}" data-day="${f}" ${free?'':'disabled'}>${DN[d.getDay()]}<b>${d.getDate()}</b><small>${MN[d.getMonth()]}</small></button>`)}
+ $('sDay').innerHTML=days.join('');
+ if(!sel.day){$('sHour').innerHTML='<div class="empty">Primero elige un día.</div>'}
+ else{const hs=slots(sel.day);$('sHour').innerHTML=hs.length?hs.map(h=>`<button class="opt${sel.hour===h?' on':''}" data-hour="${h}" ${busy(sel.day,h)?'disabled':''}>${h}</button>`).join(''):'<div class="empty">Sin horas este día.</div>'}
+ $('svcList').innerHTML=cfg.servicios.map(s=>`<article><h3>${esc(s.n)}</h3><div class="meta">${esc(s.m)} min · ${esc(price(s))}</div><p>${esc(s.d)}</p><button class="btn sm" data-pick="${esc(s.id)}">Reservar</button></article>`).join('');
+ updSum();
+}
+function updSum(){
+ const n=$('fN').value.trim(),t=$('fT').value.trim();
+ const s=cfg.servicios.find(x=>x.id===sel.svc);
+ const ok=s&&sel.day&&sel.hour&&n&&phone(t).length>=8;
+ $('sum').innerHTML=s||sel.day?`<b>${s?esc(s.n):'Elige una terapia'}</b><br>${sel.day?esc(nice(sel.day)):'Elige un día'}${sel.hour?' · '+esc(sel.hour)+' h':''}${s?' · '+esc(price(s)):''}`:'<span class="note">Aquí verás el resumen de tu reserva.</span>';
+ const b=$('bSend');b.setAttribute('aria-disabled',ok?'false':'true');b.style.opacity=ok?1:.45;
+ if(ok){const msg=`Hola Johana, quiero reservar una hora:\n• Terapia: ${s.n}\n• Día: ${nice(sel.day)}\n• Hora: ${sel.hour}\n• Nombre: ${n}\n• Teléfono: ${t}`+($('fC').value.trim()?`\n• Comentario: ${$('fC').value.trim()}`:'');b.href='https://wa.me/'+WA+'?text='+encodeURIComponent(msg)}else b.href='#';
+}
+$('book').addEventListener('click',e=>{
+ const o=e.target.closest('[data-svc],[data-day],[data-hour]');if(!o||o.disabled)return;
+ if(o.dataset.svc)sel.svc=o.dataset.svc;if(o.dataset.day){sel.day=o.dataset.day;sel.hour=null}if(o.dataset.hour)sel.hour=o.dataset.hour;renderPub();
+});
+$('svcList').addEventListener('click',e=>{const b=e.target.closest('[data-pick]');if(!b)return;sel.svc=b.dataset.pick;renderPub();$('book').scrollIntoView({behavior:'smooth'})});
+['fN','fT','fC'].forEach(i=>$(i).addEventListener('input',updSum));
+$('bSend').addEventListener('click',async e=>{
+ if($('bSend').getAttribute('aria-disabled')==='true'){e.preventDefault();toast('Completa los 4 pasos');return}
+ const r={svc:sel.svc,f:sel.day,h:sel.hour,n:$('fN').value.trim(),t:$('fT').value.trim(),c:$('fC').value.trim(),at:Date.now()};
+ const key=(mode==='db'?uid:'L'+Date.now());
+ if(mode==='local'||canWrite){try{await wr('solicitudes/'+key,r)}catch(err){}}
+ $('done').innerHTML=`<div class="ok" style="margin-top:16px"><h3 style="font-size:22px">¡Listo, ${esc(r.n.split(' ')[0])}!</h3><p>Tu solicitud para <b>${esc(svcName(r.svc))}</b> el <b>${esc(nice(r.f))} a las ${esc(r.h)}</b> se abrió en WhatsApp. Si no se abrió, escribe a <b>+56 9 7499 4417</b>.</p></div>`;
+});
+
+/* ---- panel ---- */
+const TABS=[['agenda','Agenda'],['sol','Solicitudes'],['horario','Horario'],['ter','Terapias']];
+function renderPanel(){
+ if(!admin)return;
+ const ns=Object.keys(sols).length;
+ $('tabs').innerHTML=TABS.map(([k,l])=>`<button class="opt${tab===k?' on':''}" data-tab="${k}">${l}${k==='sol'&&ns?' ('+ns+')':''}</button>`).join('');
+ const v=$('pv');const today=iso(new Date());
+ if(tab==='agenda'){
+  const list=Object.entries(citas).filter(([,c])=>c.f>=today).sort((a,b)=>(a[0]>b[0]?1:-1));
+  let last='',html='';
+  for(const[k,c]of list){if(c.f!==last){html+=`<h3 class="dayh">${esc(nice(c.f))}</h3>`;last=c.f}
+   html+=`<div class="row"><span class="t">${esc(c.h)}</span><div class="who">${esc(c.n)}<small>${esc(svcName(c.svc))}${c.c?' · '+esc(c.c):''}</small></div><span class="tag${c.e==='pendiente'?' p':''}">${esc(c.e||'confirmada')}</span>${phone(c.t)?`<a class="btn sm" href="https://wa.me/${phone(c.t)}">WhatsApp</a>`:''}${c.e==='pendiente'?`<button class="btn sm" data-conf="${esc(k)}">Confirmar</button>`:''}<button class="btn sm" data-del="${esc(k)}">Anular</button></div>`}
+  v.innerHTML=`<div class="book" style="margin:0 0 20px"><h2 style="font-size:22px">Agregar cita</h2>
+   <div class="two"><div><label for="aN">Paciente</label><input id="aN"></div><div><label for="aT">Teléfono</label><input id="aT" type="tel"></div>
+   <div><label for="aS">Terapia</label><select id="aS">${cfg.servicios.map(s=>`<option value="${esc(s.id)}">${esc(s.n)}</option>`).join('')}</select></div>
+   <div class="two" style="gap:0 10px"><div><label for="aF">Día</label><input id="aF" type="date" value="${today}"></div><div><label for="aH">Hora</label><input id="aH" type="time" value="${esc(cfg.inicio)}"></div></div></div>
+   <div class="bar"><button class="btn pri" id="aAdd">Guardar cita</button></div></div>
+   <h2 style="font-size:24px">Próximas citas</h2>${html||'<p class="empty">No hay citas agendadas todavía.</p>'}`;
+ }
+ if(tab==='sol'){
+  const l=Object.entries(sols).sort((a,b)=>a[1].at-b[1].at);
+  v.innerHTML=`<p class="note">Reservas enviadas desde la página. Al aceptar, la hora queda bloqueada en la agenda.</p>`+(l.map(([k,s])=>`<div class="row"><span class="t">${esc(s.h)}</span><div class="who">${esc(s.n)} · ${esc(nice(s.f))}<small>${esc(svcName(s.svc))} · ${esc(s.t)}${s.c?' · '+esc(s.c):''}</small></div>${busy(s.f,s.h)?'<span class="tag p">hora ocupada</span>':`<button class="btn sm pri" data-acc="${esc(k)}">Aceptar</button>`}<button class="btn sm" data-dis="${esc(k)}">Descartar</button></div>`).join('')||'<p class="empty">No hay solicitudes nuevas. Las reservas que lleguen por WhatsApp puedes cargarlas en Agenda.</p>');
+ }
+ if(tab==='horario'){
+  v.innerHTML=`<div class="book" style="margin:0"><label>Días de atención</label><div class="wk">${[1,2,3,4,5,6,0].map(d=>`<button class="opt${cfg.dias.includes(d)?' on':''}" data-wd="${d}">${DN[d]}</button>`).join('')}</div>
+   <div class="two"><div class="two" style="gap:0 10px"><div><label for="hI">Desde</label><input id="hI" type="time" value="${esc(cfg.inicio)}"></div><div><label for="hF">Hasta</label><input id="hF" type="time" value="${esc(cfg.fin)}"></div></div>
+   <div><label for="hS">Duración de cada bloque</label><select id="hS">${[30,45,60,75,90].map(m=>`<option ${+cfg.intervalo===m?'selected':''} value="${m}">${m} minutos</option>`).join('')}</select></div></div>
+   <label for="hB">Bloquear un día (vacaciones, feriado)</label><div class="bar" style="margin:0"><input id="hB" type="date" style="flex:1 1 180px"><button class="btn" id="hBadd">Bloquear</button></div>
+   <div class="chips">${cfg.bloqueos.sort().map(f=>`<span>${esc(nice(f))} <button class="btn sm" style="min-height:28px;padding:0 8px" data-unb="${esc(f)}" aria-label="Quitar">×</button></span>`).join('')||'<span class="note" style="border:0;background:none;padding:0">Sin días bloqueados</span>'}</div>
+   <div class="bar"><button class="btn pri" id="hSave">Guardar horario</button></div></div>`;
+ }
+ if(tab==='ter'){
+  v.innerHTML=`<div class="book" style="margin:0"><p class="note" style="margin-top:0">Nombre, minutos y valor (déjalo vacío para mostrar "Valor a confirmar").</p><div id="tl">${cfg.servicios.map((s,i)=>`<div class="srow" data-i="${i}"><input class="tn" value="${esc(s.n)}" aria-label="Nombre"><input class="tm" type="number" min="15" step="5" value="${esc(s.m)}" aria-label="Minutos"><input class="tp pr" inputmode="numeric" value="${esc(s.p)}" placeholder="$ valor" aria-label="Valor"><button class="btn sm" data-rmS="${i}" aria-label="Quitar">×</button><textarea class="td" aria-label="Descripción">${esc(s.d)}</textarea></div>`).join('')}</div>
+   <div class="bar"><button class="btn" id="tAdd">+ Agregar terapia</button><button class="btn pri" id="tSave">Guardar terapias</button></div></div>`;
+ }
+}
+const readSvc=()=>[...document.querySelectorAll('.srow')].map((r,i)=>({id:cfg.servicios[i]?.id||('s'+Date.now()+i),n:r.querySelector('.tn').value.trim()||'Terapia',m:+r.querySelector('.tm').value||60,p:r.querySelector('.tp').value.trim(),d:r.querySelector('.td').value.trim()}));
+const safe=async(fn,okMsg)=>{try{await fn();if(okMsg)toast(okMsg)}catch(e){toast('No se pudo guardar. Intenta de nuevo.')}};
+document.querySelector('.panel').addEventListener('click',async e=>{
+ const t=e.target.closest('button');if(!t)return;const d=t.dataset;
+ if(d.tab){tab=d.tab;renderPanel();return}
+ if(t.id==='aAdd'){const c={n:$('aN').value.trim(),t:$('aT').value.trim(),svc:$('aS').value,f:$('aF').value,h:$('aH').value,c:'',e:'confirmada'};if(!c.n||!c.f||!c.h){toast('Falta nombre, día u hora');return}safe(async()=>{if(await addCita(c))toast('Cita guardada')})}
+ if(d.conf){const c={...citas[d.conf],e:'confirmada'};safe(()=>wr('citas/'+d.conf,c),'Cita confirmada')}
+ if(d.del){if(t.dataset.sure!=='1'){t.dataset.sure='1';t.textContent='¿Seguro?';return}safe(()=>delCita(d.del),'Cita anulada')}
+ if(d.acc){const s=sols[d.acc];safe(async()=>{if(await addCita({n:s.n,t:s.t,svc:s.svc,f:s.f,h:s.h,c:s.c||'',e:'confirmada'})){await rm('solicitudes/'+d.acc);toast('Aceptada: avísale por WhatsApp')}})}
+ if(d.dis)safe(()=>rm('solicitudes/'+d.dis),'Solicitud descartada');
+ if(d.wd!==undefined){const n=+d.wd;cfg={...cfg,dias:cfg.dias.includes(n)?cfg.dias.filter(x=>x!==n):[...cfg.dias,n]};renderPanel()}
+ if(t.id==='hBadd'){const f=$('hB').value;if(f&&!cfg.bloqueos.includes(f)){cfg={...cfg,bloqueos:[...cfg.bloqueos,f]};renderPanel()}}
+ if(d.unb){cfg={...cfg,bloqueos:cfg.bloqueos.filter(x=>x!==d.unb)};renderPanel()}
+ if(t.id==='hSave'){const n={...cfg,inicio:$('hI').value||'10:00',fin:$('hF').value||'19:00',intervalo:+$('hS').value};safe(()=>wr('config/main',n),'Horario guardado')}
+ if(d.rms!==undefined){const l=readSvc();l.splice(+d.rms,1);cfg={...cfg,servicios:l};renderPanel()}
+ if(t.id==='tAdd'){cfg={...cfg,servicios:[...readSvc(),{id:'s'+Date.now(),n:'Nueva terapia',m:60,p:'',d:''}]};renderPanel()}
+ if(t.id==='tSave'){const n={...cfg,servicios:readSvc()};safe(()=>wr('config/main',n),'Terapias guardadas')}
+});
+function setView(adm){document.body.classList.toggle('adm',adm);$('bPanel').hidden=!admin||adm;$('bPub').hidden=!adm;if(adm)renderPanel();window.scrollTo(0,0);try{history.replaceState(null,'',adm?'#panel':'#')}catch(e){}}
+$('bPanel').onclick=()=>setView(true);$('bPub').onclick=()=>setView(false);
+function renderAll(){renderPub();if(document.body.classList.contains('adm'))renderPanel();$('bPanel').hidden=!admin||document.body.classList.contains('adm')}
+
+/* ---- arranque ---- */
+let canWrite=false;
+const preview=typeof claude==='undefined';
+loadLocal();admin=preview;
+$('modeNote').textContent='Modo prueba: los datos se guardan solo en este navegador.';
+renderAll();
+(async()=>{
+ if(preview){if(location.hash==='#panel')setView(true);return}
+ const [d,u]=await Promise.all([claude.use('db'),claude.use('user')]).catch(()=>[null,null]);
+ if(!d){if(location.hash==='#panel')setView(true);return}
+ db=d;usr=u;mode='db';cfg=structuredClone(DEF);citas={};ocup={};sols={};
+ admin=u?((await u.canEdit())??false):false;
+ uid=u?await u.id():null;canWrite=!!uid&&((await u.can('data.write'))!==false);
+ $('modeNote').textContent='Solo tú ves este panel. Los cambios se guardan al instante.';
+ const tm=setTimeout(()=>toast('Cargando la agenda…'),10000);
+ db.doc('config/main').onSnapshot(s=>{clearTimeout(tm);if(s.exists){const x=s.data();cfg={...DEF,...x}}renderAll()},()=>{});
+ db.collection('ocupados').onSnapshot(q=>{ocup={};q.docs.forEach(x=>ocup[x.id]=x.data());renderAll()},()=>{});
+ if(admin){
+  db.collection('citas').onSnapshot(q=>{citas={};q.docs.forEach(x=>citas[x.id]=x.data());renderAll()},()=>{});
+  db.collection('solicitudes').onSnapshot(q=>{sols={};q.docs.forEach(x=>sols[x.id]=x.data());renderAll()},()=>{});
+ }
+ setView(admin&&location.hash==='#panel');
+})();
+}
+</script>
+</body>
+</html>
